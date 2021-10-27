@@ -119,7 +119,7 @@ io.sockets.on('connection', function (socket) {
   // TOP list
   setInterval(function () {
     execHandler(
-      "ps aux --width 30 --sort -rss --no-headers | head  | awk '{print $11}'"
+      "ps aux --width 30 --sort -%cpu --no-headers | head  | awk '{print $11}'"
     )
       .then((stdout) => socket.emit('toplist', stdout))
       .catch(errorHandler)

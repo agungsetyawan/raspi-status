@@ -11,45 +11,48 @@
     <!--<script src="//code.highcharts.com/highcharts.js" type="application/javascript"></script>-->
     <script src="//code.highcharts.com/stock/highstock.js"></script>
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
     <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="//code.highcharts.com/modules/exporting.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row marketing">
+    <div class="container mt-md-5">
+        <div class="row">
             <div class="col-lg-4">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">General info</div>
-                    <div class="panel-body">
-                        <p id="p_hostname">Here you can see the general info of the Raspberry Pi</p>
-                        <p id="p_kernel"></p>
-                        <p id="p_uptime"></p>
-                        <p id="p_cpu_temp"></p>
-                        <div>
-                            <b>Top list:</b>
-                            <ol id="toplist">
-                            </ol>
+                <div class="card text-white bg-secondary">
+                    <h5 class="card-header">General info</h4>
+                        <div class="card-body">
+                            <p id="p_hostname">Here you can see the general info of the Raspberry Pi</p>
+                            <p id="p_kernel"></p>
+                            <p id="p_uptime"></p>
+                            <p id="p_cpu_temp"></p>
+                            <div>
+                                <b>Top list:</b>
+                                <ol id="toplist">
+                                </ol>
+                            </div>
                         </div>
-                    </div>
                 </div>
             </div>
             <div class="col-lg-8">
-                <div id="memory" style="min-width: 100; height:250px; margin: 0 auto"></div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="memory" style="width:100%; height:300px;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div id="cpuTemperature" style="width:100%; height:300px;"></div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div id="cpuUsage" style="width:100%; height:300px;"></div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row marketing">
-            <div class="col-lg-6">
-                <div class="container" id="cpuTemperature" style="width:100%; height:300px;"></div>
-            </div>
-            <div class="col-lg-6">
-                <div class="container" id="cpuUsage" style="width:100%; height:300px;"></div>
-            </div>
-        </div>
+
         <script>
             const socket = io.connect("//" + location.host);
             let chartTemperature, chartCPU, chartMem, memTotal;
@@ -211,7 +214,7 @@
                 document.getElementById("p_uptime").innerHTML = "<b>Up time:</b> " + uptime;
             });
             socket.on("temperatureUpdate", function (time, data) {
-                document.getElementById("p_cpu_temp").innerHTML = "<b>CPU Temp:</b> " + data +  "\u00B0C";
+                document.getElementById("p_cpu_temp").innerHTML = "<b>CPU Temp:</b> " + data + "\u00B0C";
             });
             socket.on("toplist", function (toplist) {
                 const res = toplist.split("\n");
