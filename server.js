@@ -1,13 +1,22 @@
-const { port, ip, intervals } = require('./config'),
-  {
-    serverHandler,
-    execHandler,
-    errorHandler,
-    counterAdd,
-    counterLess
-  } = require('./utils'),
-  server = require('http').createServer(serverHandler).listen(port, ip),
-  io = require('socket.io').listen(server)
+const { port, ip, intervals } = require('./config')
+const {
+  serverHandler,
+  execHandler,
+  errorHandler,
+  counterAdd,
+  counterLess
+} = require('./utils')
+const server = require('http').createServer(serverHandler).listen(port, ip)
+const io = require('socket.io').listen(server)
+
+function formatBytes(bytes, decimals = 2) {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+}
 
 io.sockets.on('connection', function (socket) {
   const address = socket.handshake.address
@@ -20,7 +29,7 @@ io.sockets.on('connection', function (socket) {
   // Function for checking memory
   execHandler("egrep --color 'MemTotal' /proc/meminfo | egrep '[0-9.]{4,}' -o")
     .then((stdout) => {
-      socket.emit('memoryTotal', stdout)
+      socket.emit("memoryTotal", formatBytes(stdout * 1024));
     })
     .catch(errorHandler)
 
@@ -38,6 +47,13 @@ io.sockets.on('connection', function (socket) {
 
   execHandler("top -d 0.5 -b -n2 | tail -n 10 | awk '{print $12}'")
     .then((stdout) => socket.emit('toplist', stdout))
+    .catch(errorHandler)
+  
+  execHandler('cat /sys/class/thermal/thermal_zone0/temp')
+    .then((stdout) => {
+      const temp = parseFloat(stdout) / 1000;
+      socket.emit('temperatureUpdate', null, temp)
+    })
     .catch(errorHandler)
 
   setInterval(function () {
