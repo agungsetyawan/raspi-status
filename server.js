@@ -94,8 +94,12 @@ io.sockets.on('connection', function (socket) {
           percentFree,
           percentUsed,
           percentBuffered,
-          percentCached
-        )
+          percentCached,
+          formatBytes(memFree * 1024),
+          formatBytes(memUsed * 1024),
+          formatBytes(memBuffered * 1024),
+          formatBytes(memCached * 1024)
+        );
       })
       .catch(errorHandler)
 
