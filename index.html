@@ -147,14 +147,14 @@
                     type: "bar",
                     events: {
                         load: function () {
-                            socket.on("memoryUpdate", function (free, used, buffered, cached, freeByte, usedByte, bufferedByte, cachedByte) {
+                            socket.on("memoryUpdate", function (available, used, buffered, cached, availableByte, usedByte, bufferedByte, cachedByte) {
                                 chartMem.series[0].setData([
                                     { y: used, color: "red" },
-                                    { y: free, color: "green" },
+                                    { y: available, color: "green" },
                                     { y: buffered, color: "blue" },
                                     { y: cached, color: "orange" },
                                 ]);
-                                chartMem.xAxis[0].update({categories:[`Used ${usedByte}`, `Free ${freeByte}`, `Buffered ${bufferedByte}`, `Cached ${cachedByte}`]}, true);
+                                chartMem.xAxis[0].update({categories:[`Used ${usedByte}`, `Available ${availableByte}`, `Buffered ${bufferedByte}`, `Cached ${cachedByte}`]}, true);
                             });
                         },
                     },
@@ -163,7 +163,7 @@
                     text: "Memory",
                 },
                 xAxis: {
-                    categories: ["Used", "Free", "Buffered", "Cached"],
+                    categories: ["Used", "Available", "Buffered", "Cached"],
                     title: {
                         text: null,
                     },
